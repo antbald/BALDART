@@ -1,16 +1,43 @@
-# Claude Agent Framework
+# BALDART - Claude Agent Framework
 
-A comprehensive, reusable framework for coordinating AI agents and human developers in software projects. Provides protocols, agents, commands, and templates for structured, documented, and maintainable development workflows.
+A comprehensive, reusable framework for coordinating AI agents and human developers in software projects. Install via npm/npx - no bash scripts needed.
 
 ## What Is This?
 
-The Claude Agent Framework is a portable system for:
+BALDART provides a portable system for:
 
 - **Agent Coordination**: Clear protocols (AGENTS.md) defining how AI agents and humans work together
 - **AI Agents**: Pre-built specialized agents (coder, code-reviewer, doc-reviewer, etc.)
 - **Commands**: Batch orchestration (/new), design reviews, issue analysis
 - **Templates**: Backlog cards, PRDs, specs, breaking change checklists
 - **Documentation Structure**: Standard layouts for API docs, data models, UI specs
+
+## Quick Start
+
+### Installation
+
+```bash
+# In your project directory
+npx baldart add
+```
+
+That's it! The framework is installed via Git subtree, symlinks created, and you're ready to go.
+
+### Usage
+
+```bash
+# Show version
+npx baldart version
+
+# Check status
+npx baldart status
+
+# Update framework
+npx baldart update
+
+# Contribute improvements
+npx baldart push
+```
 
 ## Features
 
@@ -45,38 +72,7 @@ The Claude Agent Framework is a portable system for:
 - `ui-guidelines.template.md`: UI/UX guidelines template
 - `brand-guidelines.md`: Brand identity template
 
-### Pre-commit Hooks
-
-- `lint-before-commit.sh.template`: Customizable pre-commit checks
-
-## Installation
-
-### Prerequisites
-
-- Git repository
-- Bash shell
-- Internet connection (for initial download)
-
-### Quick Start
-
-```bash
-# Clone or download the framework
-git clone https://github.com/antbald/BALDART.git /tmp/framework
-
-# Run installation script
-cd /your/project
-bash /tmp/framework/install-framework.sh
-```
-
-The installer will:
-
-1. Verify environment
-2. Download framework via Git subtree
-3. Create symlinks for auto-updateable files
-4. Copy templates for customization
-5. Configure Git aliases (`fw-version`, `fw-update`, `fw-push`)
-
-### What Gets Installed
+## What Gets Installed
 
 ```
 your-project/
@@ -93,80 +89,55 @@ your-project/
 └── templates/               # Customizable backlog/spec templates
 ```
 
-## Usage
+## Daily Workflow
 
-### Daily Workflow
-
-1. **Start new feature**:
-   ```bash
-   # Read protocol
-   cat AGENTS.md
-
-   # Create backlog card from template
-   cp templates/feature-card.template.yml backlog/FEAT-001.yml
-
-   # Edit card, then implement
-   # Framework guides agent coordination automatically
-   ```
-
-2. **Batch implementation**:
-   ```bash
-   # Implement multiple cards
-   /new FEAT-001 FEAT-002 FEAT-003
-
-   # Framework orchestrates:
-   # - codebase-architect (understand code)
-   # - coder (implement)
-   # - code-reviewer (review)
-   # - doc-reviewer (document)
-   # - commit (with proper format)
-   ```
-
-### Updating the Framework
+### 1. Create Backlog Card
 
 ```bash
-# Check current version
-git fw-version
+# Copy template
+cp templates/feature-card.template.yml backlog/FEAT-001.yml
 
-# Update to latest version
-git fw-update
-# or: ./update-framework.sh
-
-# Script will:
-# - Show changelog
-# - Preview changes
-# - Create backup
-# - Update framework
-# - Verify symlinks
+# Edit card with your requirements
 ```
 
-### Contributing Improvements
+### 2. Implement with Framework
 
 ```bash
-# Push your improvements back to the framework
-git fw-push
-# or: ./push-improvements.sh
+# Framework guides agent coordination automatically
+# Use /new command for batch implementation
+/new FEAT-001
+```
 
-# Script will:
-# - Review your changes
-# - Classify change type (MAJOR/MINOR/PATCH)
-# - Guide version update
-# - Push to central repository
+### 3. Update Framework
+
+```bash
+# Check for updates
+npx baldart status
+
+# Update to latest
+npx baldart update
+```
+
+### 4. Contribute Back
+
+```bash
+# Made improvements? Share them!
+npx baldart push
 ```
 
 ## Customization
 
 ### Files You SHOULD Customize
 
-1. **`.claude/hooks/lint-before-commit.sh`**
-   - Replace `npm run lint` with your project's lint command
-   - Replace `npm run build` with your project's build command
+1. **`.claude/hooks/lint-before-commit.sh.template`**
+   - Replace commands with your project's tools
+   - Rename to `lint-before-commit.sh`
    - Make executable: `chmod +x .claude/hooks/lint-before-commit.sh`
 
 2. **`docs/references/ui-guidelines.template.md`**
    - Define brand colors, typography, spacing
    - Document component patterns
-   - Save as `docs/references/ui-guidelines.md`
+   - Rename to `ui-guidelines.md`
 
 3. **`docs/references/brand-guidelines.md`**
    - Add logo specifications
@@ -174,7 +145,7 @@ git fw-push
    - Document imagery guidelines
 
 4. **`templates/*.yml`**
-   - Adapt backlog card template for your project
+   - Adapt backlog card template
    - Add project-specific fields
 
 ### Files You SHOULD NOT Modify
@@ -186,102 +157,108 @@ Files with symlinks auto-update when framework updates:
 - `.claude/agents/`
 - `.claude/commands/`
 
-If you modify these, your changes will be overwritten on next update.
+## Commands Reference
 
-## Project-Specific Agents
+### `npx baldart add [repo]`
 
-Add custom agents to your project:
+Install framework in your project.
 
+- `repo`: Optional. Default: `antbald/BALDART`
+- `--branch`: Branch to use. Default: `main`
+
+**Example:**
 ```bash
-# Create custom agent
-cat > .claude/agents/my-custom-agent.md << 'EOF'
----
-name: my-custom-agent
-description: "Custom agent for my project"
-model: opus
-color: blue
----
-
-[Agent instructions here]
-EOF
-
-# Update registry (optional)
-# Add to .claude/agents/REGISTRY.md
+npx baldart add              # Install from default repo
+npx baldart add owner/repo   # Install from custom repo
 ```
 
-## Versioning
+### `npx baldart update`
 
-The framework follows [Semantic Versioning](https://semver.org/):
+Update framework to latest version.
 
-- **MAJOR** (X.0.0): Breaking changes (incompatible updates)
-- **MINOR** (0.X.0): New features (backwards compatible)
-- **PATCH** (0.0.X): Bug fixes (backwards compatible)
+- Shows changelog
+- Creates backup tag
+- Updates via Git subtree
+- Verifies symlinks
 
-Check current version:
+### `npx baldart push`
 
-```bash
-cat .framework/VERSION
-# or: git fw-version
-```
+Contribute improvements back to framework.
+
+- Reviews your changes
+- Classifies change type (MAJOR/MINOR/PATCH)
+- Pushes via Git subtree
+- Guides VERSION/CHANGELOG update
+
+### `npx baldart version`
+
+Show installed framework version.
+
+### `npx baldart status`
+
+Check installation status:
+- Framework version
+- Symlink validity
+- Customizable files presence
+- Update availability
 
 ## Architecture
 
 ### Git Subtree Strategy
 
-The framework uses Git subtree for bidirectional sync:
+BALDART uses Git subtree for bidirectional sync:
 
-- **Pull updates**: `./update-framework.sh` pulls new versions
-- **Push improvements**: `./push-improvements.sh` contributes back
+- **Pull updates**: `npx baldart update` pulls new versions
+- **Push improvements**: `npx baldart push` contributes back
 - **Local copy**: Framework lives in `.framework/` directory
 - **Symlinks**: Auto-updated files link to `.framework/`
 - **Copies**: Customizable files copied from `.framework/`
 
-### Why Symlinks?
+### Why NPX?
 
-Symlinks enable:
+- **No global install**: Use latest version every time
+- **Cross-platform**: Works on Windows/Mac/Linux
+- **Standard**: Familiar to all Node.js developers
+- **Simple**: One command to rule them all
 
-- Automatic updates when framework updates
-- No manual file copying
-- Clear separation: framework vs project-specific
+## Versioning
 
-### Why Copies?
+BALDART follows [Semantic Versioning](https://semver.org/):
 
-Copies enable:
+- **MAJOR** (X.0.0): Breaking changes (incompatible updates)
+- **MINOR** (0.X.0): New features (backwards compatible)
+- **PATCH** (0.0.X): Bug fixes (backwards compatible)
 
-- Project-specific customization (hooks, UI guidelines)
-- No conflicts with framework updates
-- Flexibility for your needs
+Check version:
+```bash
+npx baldart version
+```
 
 ## Troubleshooting
 
-### "Framework not found" error
+### "Framework not installed" error
 
 ```bash
-# Reinstall framework
-./install-framework.sh
+# Install framework first
+npx baldart add
 ```
 
 ### Symlinks broken after update
 
 ```bash
-# Recreate symlinks
-ln -sf .framework/AGENTS.md AGENTS.md
-ln -sf .framework/agents agents
-ln -sf ../.framework/.claude/agents .claude/agents
-ln -sf ../.framework/.claude/commands .claude/commands
+# Reinstall to recreate symlinks
+npx baldart add
 ```
 
-### Conflits during update
+### Conflicts during update
 
 ```bash
-# See conflicting files
+# Check conflicting files
 git status
 
-# Choose resolution:
+# Choose resolution
 git checkout --ours <file>    # Keep your version
 git checkout --theirs <file>  # Use framework version
-
-# Or edit manually and resolve markers (<<<<, ====, >>>>)
 
 # Complete merge
 git add <resolved-files>
@@ -291,31 +268,39 @@ git commit -m "Resolved framework update conflicts"
 ### Rollback after bad update
 
 ```bash
-# Find backup tag (created by update-framework.sh)
+# Find backup tag (created by update)
 git tag | grep backup/
 
-# Rollback to backup
-git checkout backup/YYYYMMDD-HHMMSS
+# Rollback
+git checkout backup/YYYY-MM-DD-HH-MM-SS
 git checkout -b recovery-branch
-
-# Fix issues, then retry update
-./update-framework.sh
 ```
+
+## Requirements
+
+- **Node.js**: >= 18.0.0
+- **Git**: >= 2.0.0
+- **npm**: >= 8.0.0
 
 ## License
 
-[Specify your license here]
+MIT
 
 ## Contributing
 
-Contributions welcome! To contribute:
+Contributions welcome!
 
 1. Make improvements in your project
 2. Test thoroughly
-3. Run `./push-improvements.sh`
+3. Run `npx baldart push`
 4. Classify change type (MAJOR/MINOR/PATCH)
 5. Update VERSION and CHANGELOG in framework repo
-6. Create pull request (if using PR workflow)
+
+## Repository
+
+- **GitHub**: https://github.com/antbald/BALDART
+- **npm**: `baldart` (publishing soon)
+- **Issues**: https://github.com/antbald/BALDART/issues
 
 ## Credits
 
@@ -323,6 +308,7 @@ Created for coordinating AI agents and humans in software development.
 
 ## Support
 
-- Documentation: `cat .framework/README.md`
-- Changelog: `cat .framework/CHANGELOG.md`
-- Issues: [GitHub Issues](https://github.com/antbald/BALDART/issues)
+- **Documentation**: `cat .framework/README.md`
+- **Changelog**: `cat .framework/CHANGELOG.md`
+- **Status**: `npx baldart status`
+- **Version**: `npx baldart version`

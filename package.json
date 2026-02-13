@@ -1,0 +1,48 @@
+{
+  "name": "baldart",
+  "version": "1.0.0",
+  "description": "Claude Agent Framework - Reusable framework for coordinating AI agents and humans in software projects",
+  "main": "src/index.js",
+  "bin": {
+    "baldart": "./bin/baldart.js"
+  },
+  "scripts": {
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "keywords": [
+    "claude",
+    "ai",
+    "agents",
+    "framework",
+    "coordination",
+    "development",
+    "workflow"
+  ],
+  "author": "Antonio Baldassarre <antonio@example.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/antbald/BALDART.git"
+  },
+  "bugs": {
+    "url": "https://github.com/antbald/BALDART/issues"
+  },
+  "homepage": "https://github.com/antbald/BALDART#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0",
+    "inquirer": "^8.2.5",
+    "ora": "^5.4.1",
+    "simple-git": "^3.22.0"
+  },
+  "files": [
+    "bin",
+    "src",
+    "framework",
+    "README.md",
+    "LICENSE"
+  ]
+}
