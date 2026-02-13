@@ -17,7 +17,7 @@ CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 # Framework repository URL
-FRAMEWORK_REPO="${FRAMEWORK_REPO:-https://github.com/yourusername/claude-agent-framework.git}"
+FRAMEWORK_REPO="${FRAMEWORK_REPO:-https://github.com/antbald/BALDART.git}"
 FRAMEWORK_DIR=".framework"
 
 # Helper functions (same as install-framework.sh)

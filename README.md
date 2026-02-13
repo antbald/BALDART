@@ -61,7 +61,7 @@ The Claude Agent Framework is a portable system for:
 
 ```bash
 # Clone or download the framework
-git clone https://github.com/yourusername/claude-agent-framework.git /tmp/framework
+git clone https://github.com/antbald/BALDART.git /tmp/framework
 
 # Run installation script
 cd /your/project
@@ -325,4 +325,4 @@ Created for coordinating AI agents and humans in software development.
 
 - Documentation: `cat .framework/README.md`
 - Changelog: `cat .framework/CHANGELOG.md`
-- Issues: [GitHub Issues](https://github.com/yourusername/claude-agent-framework/issues)
+- Issues: [GitHub Issues](https://github.com/antbald/BALDART/issues)
