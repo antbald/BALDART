@@ -288,13 +288,18 @@ MIT
 
 ## Contributing
 
-Contributions welcome!
+Contributions welcome! See **[MAINTAINING.md](MAINTAINING.md)** for the complete protocol.
+
+**Quick process:**
 
 1. Make improvements in your project
 2. Test thoroughly
 3. Run `npx baldart push`
 4. Classify change type (MAJOR/MINOR/PATCH)
-5. Update VERSION and CHANGELOG in framework repo
+5. Update `VERSION` and `CHANGELOG.md`
+6. Create git tag and push
+
+**For agents:** Follow the complete checklist in [MAINTAINING.md](MAINTAINING.md) to ensure proper versioning, documentation, and release process.
 
 ## Repository
 
@@ -308,7 +313,9 @@ Created for coordinating AI agents and humans in software development.
 
 ## Support
 
-- **Documentation**: `cat .framework/README.md`
-- **Changelog**: `cat .framework/CHANGELOG.md`
-- **Status**: `npx baldart status`
-- **Version**: `npx baldart version`
+- **Current Version**: `cat VERSION`
+- **Changelog**: See [CHANGELOG.md](CHANGELOG.md)
+- **Maintenance Protocol**: See [MAINTAINING.md](MAINTAINING.md)
+- **Check Status**: `npx baldart status`
+- **Check Version**: `npx baldart version`
+- **Issues**: https://github.com/antbald/BALDART/issues

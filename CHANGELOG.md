@@ -1,35 +1,66 @@
 # Changelog
 
-All notable changes to the Claude Agent Framework will be documented in this file.
+All notable changes to BALDART will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
-### Added
-- Initial framework structure
-- Agent coordination protocols
-- Custom Claude agents
-- Installation, update, and push scripts
-- Documentation templates
-
 ## [1.0.0] - 2026-02-13
 
 ### Added
-- Initial release of Claude Agent Framework
-- Core AGENTS.md protocol with agent coordination rules
-- 17 domain modules for agent routing
-- 9 generic AI agents (coder, code-reviewer, doc-reviewer, etc.)
-- Custom commands: /new, /design-review, /issue-review
-- Git hooks for pre-commit checks
-- Documentation templates for UI guidelines, brand guidelines
-- Backlog card templates
-- Installation script with 8-step guided process
-- Update script with 7-step guided process
-- Push improvements script with 8-step guided process
-- VERSION tracking and CHANGELOG maintenance
-- Complete README with usage instructions
+- Complete npm package implementation with CLI
+- 5 commands: add, update, push, version, status
+- Interactive prompts with colored terminal output
+- Git subtree bidirectional sync (pull updates + push improvements)
+- Professional utility classes (git, ui, symlinks)
+- Comprehensive README with npm/npx usage
+- 9 generic AI agents (codebase-architect, coder, code-reviewer, doc-reviewer, prd, plan-auditor, senior-researcher, api-perf-cost-auditor)
+- 17 domain modules (architecture, workflows, testing, security, etc.)
+- 3 commands (/new, /design-review, /issue-review)
+- Templates (feature-card, spec, breaking-change-checklist, ui-guidelines, brand-guidelines)
+- Symlink-based auto-update mechanism
+- Customizable files (hooks, UI guidelines, templates)
 
-[Unreleased]: https://github.com/yourusername/claude-agent-framework/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/yourusername/claude-agent-framework/releases/tag/v1.0.0
+### Changed
+- **BREAKING**: Replaced bash scripts with npm package
+- **BREAKING**: Installation now via `npx baldart add` instead of bash script
+- **BREAKING**: All commands now use `npx baldart <command>` syntax
+- **BREAKING**: Framework files moved to `framework/` subdirectory
+
+### Removed
+- install-framework.sh (replaced by src/commands/add.js)
+- update-framework.sh (replaced by src/commands/update.js)
+- push-improvements.sh (replaced by src/commands/push.js)
+
+## [Unreleased]
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+---
+
+## Version Format
+
+**MAJOR.MINOR.PATCH**
+
+- **MAJOR**: Breaking changes (incompatible API updates, directory structure changes, removed features)
+- **MINOR**: New features (backwards compatible additions)
+- **PATCH**: Bug fixes (backwards compatible fixes)
+
+## Change Categories
+
+- **Added**: New features
+- **Changed**: Changes in existing functionality
+- **Deprecated**: Soon-to-be removed features
+- **Removed**: Removed features
+- **Fixed**: Bug fixes
+- **Security**: Security fixes
