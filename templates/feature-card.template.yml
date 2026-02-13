@@ -1,0 +1,116 @@
+# Feature Card Template
+# Copy this file to /backlog/<feature-name>.yml and fill in all sections
+
+id: FEAT-XXX
+title: "[Brief feature name]"
+status: TODO  # TODO | IN_PROGRESS | BLOCKED | DONE
+priority: MEDIUM  # LOW | MEDIUM | HIGH | CRITICAL
+execution_mode: cloud  # local | cloud
+owner_agent: ""  # codex | claude | human
+claimed_at: ""  # YYYY-MM-DD HH:MM
+claimed_paths: []  # File/path ownership lock for this card
+
+git_strategy:
+  branch: ""  # main | codex/<card-id>-<slug> | claude/<card-id>-<slug> | <custom-branch-name>
+  reason: ""  # Why this choice (optional, for documentation)
+
+scope:
+  summary: "[1-2 sentence description of what this feature does]"
+  users: []  # CUSTOMER | MERCHANT | ADMIN
+  value: "[Why this feature matters - business/user value]"
+
+areas:
+  ui: []  # List of UI pages/components affected (e.g., /dashboard, /merchant/page.tsx)
+  api: []  # List of API routes affected (e.g., /api/merchants, /api/coupons/generate)
+  data: []  # Firestore collections affected (e.g., merchants, coupons, users)
+  external: []  # External dependencies (e.g., html5-qrcode, Firebase Admin)
+
+entrypoints:
+  ui:
+    - path: ""
+      description: ""
+  api:
+    - endpoint: ""
+      method: ""  # GET | POST | PATCH | DELETE
+      description: ""
+
+data:
+  collections:
+    - name: ""
+      operations: []  # CREATE | READ | UPDATE | DELETE
+      new_fields: []  # List new fields if schema changes
+  indexes: []  # List required Firestore indexes
+
+acceptance_criteria:
+  - "[AC-1] User can..."
+  - "[AC-2] System validates..."
+  - "[AC-3] Error handling for..."
+
+definition_of_done:
+  - "[ ] Code implemented and reviewed"
+  - "[ ] CI checks pass on PR"
+  - "[ ] Manual testing completed (required for local mode, optional for cloud mode unless requested)"
+  - "[ ] QA issues created on GitHub for this feature (atomic tests, labeled)"
+  - "[ ] docs/references/* updated (api-surface, data-model, ui-pages, project-status)"
+  - "[ ] No TypeScript errors (npm run build passes)"
+  - "[ ] PR opened and linked in notes (cloud mode)"
+  - "[ ] Seed script updated if needed"
+
+tasks:
+  - id: 1
+    title: ""
+    status: TODO  # TODO | IN_PROGRESS | DONE
+    assigned_to: null
+  - id: 2
+    title: ""
+    status: TODO
+    assigned_to: null
+  - id: 3
+    title: "Create QA GitHub issues for this feature (atomic tests + labels)"
+    status: TODO
+    assigned_to: null
+
+unknowns:
+  - "[U-1] Question or unknown requirement"
+  - "[U-2] Technical decision needed"
+
+assumptions:
+  - "[A-1] Assumption made with rationale"
+
+blockers:
+  - "[B-1] Blocked by..."
+
+handoff:
+  from: null
+  to: null
+  status: null  # HANDOFF_READY | ACKNOWLEDGED | COMPLETE
+  summary: null
+  next_steps: []
+
+ci_evidence:
+  pr_url: ""
+  required_checks: []  # build | test | lint | typecheck
+  status: ""  # PASS | FAIL | PENDING
+
+links:
+  spec: ""  # Link to docs/specs/<feature-name>.md
+  related_features: []  # Links to related feature cards
+  project_md_sections: []  # Sections in docs/references this affects
+
+notes: |
+  Additional context, decisions, or implementation notes.
+
+# Checkpoint section for context window management (used by coder agent)
+checkpoint:
+  timestamp: null  # "YYYY-MM-DD HH:MM" when checkpoint was created
+  completed: []  # List of completed tasks/milestones
+  in_progress: null  # Current task being worked on
+  next_action: null  # Specific next step for resuming
+  files_modified: []  # Files changed in this session
+  build_status: null  # PASS/FAIL from last build
+  context_for_resume: null  # Essential info needed to resume work
+
+metadata:
+  created: YYYY-MM-DD
+  updated: YYYY-MM-DD
+  estimated_effort: ""  # S | M | L | XL

@@ -1,0 +1,66 @@
+#!/bin/bash
+# Lint check hook - runs before git commit to catch errors early
+#
+# Exit codes:
+#   0 = allow command to proceed
+#   2 = block command and show error to Claude
+#
+# SETUP INSTRUCTIONS:
+# 1. Copy this file to .claude/hooks/lint-before-commit.sh
+# 2. Make it executable: chmod +x .claude/hooks/lint-before-commit.sh
+# 3. Customize the lint/build commands for your project
+# 4. Test it: echo '{"command":"git commit -m test"}' | .claude/hooks/lint-before-commit.sh
+
+# Read hook input from stdin (JSON with tool_input)
+INPUT=$(cat)
+
+# Extract command - handle both direct command and nested structure
+COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // .command // empty' 2>/dev/null)
+
+# Only run lint check for git commit commands
+if echo "$COMMAND" | grep -qE 'git commit'; then
+  echo "Running lint check before commit..." >&2
+
+  # Run linter - CUSTOMIZE THIS FOR YOUR PROJECT
+  # Examples:
+  # - Node.js/npm: npm run lint
+  # - Python: pylint src/ or flake8 src/
+  # - Ruby: rubocop
+  # - Go: golangci-lint run
+  LINT_OUTPUT=$(npm run lint 2>&1)  # <-- CUSTOMIZE THIS COMMAND
+  LINT_EXIT=$?
+
+  if [ $LINT_EXIT -ne 0 ]; then
+    echo "" >&2
+    echo "LINT ERRORS - must fix before committing:" >&2
+    echo "$LINT_OUTPUT" >&2
+    echo "" >&2
+    echo "Fix these errors and try the commit again." >&2
+    exit 2  # Block the git commit
+  fi
+
+  echo "Lint check passed." >&2
+
+  # Run build check - CUSTOMIZE THIS FOR YOUR PROJECT
+  # Examples:
+  # - Node.js/npm: npm run build
+  # - Python: python setup.py build
+  # - Go: go build
+  # - Rust: cargo build
+  echo "Running build check before commit..." >&2
+  BUILD_OUTPUT=$(npm run build 2>&1)  # <-- CUSTOMIZE THIS COMMAND
+  BUILD_EXIT=$?
+
+  if [ $BUILD_EXIT -ne 0 ]; then
+    echo "" >&2
+    echo "BUILD ERRORS - must fix before committing:" >&2
+    echo "$BUILD_OUTPUT" >&2
+    echo "" >&2
+    echo "Fix these errors and try the commit again." >&2
+    exit 2  # Block the git commit
+  fi
+
+  echo "Build check passed." >&2
+fi
+
+exit 0  # Allow the command
