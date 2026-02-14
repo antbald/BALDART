@@ -15,11 +15,13 @@ If no card IDs are provided, ask the user which cards to implement.
 
 ## Context Tracking (CRITICAL)
 
-You MUST maintain a **persistent tracking file** at `/tmp/batch-tracker.md` throughout the entire batch run. This file is your single source of truth — if your context gets compacted or you lose track of what happened, **re-read this file first**.
+You MUST maintain a **persistent tracking file** at `/tmp/batch-tracker-<FIRST-CARD-ID>.md` throughout the entire batch run (e.g., `/tmp/batch-tracker-FEAT-0396.md`). Use the **first card ID** from the batch as the suffix. This ensures multiple `/new` sessions running in parallel terminals (e.g., one per worktree) do NOT conflict.
+
+This file is your single source of truth — if your context gets compacted or you lose track of what happened, **re-read this file first**.
 
 ### Tracking file format
 
-At batch start, create `/tmp/batch-tracker.md` with:
+At batch start, create `/tmp/batch-tracker-<FIRST-CARD-ID>.md` with:
 
 ```markdown
 # Batch Run: [CARD-IDS]
@@ -60,7 +62,7 @@ Main repo: [/absolute/path/to/main/repo]
   - Test results (new + existing count, pass/fail)
   - Fix cycles count
 - **When blocked**: log the blocker in `## Issues & Flags`.
-- **On context recovery**: if you ever feel lost or after context compaction, IMMEDIATELY read `/tmp/batch-tracker.md` to restore your state.
+- **On context recovery**: if you ever feel lost or after context compaction, IMMEDIATELY read your tracker file (`/tmp/batch-tracker-<FIRST-CARD-ID>.md`) to restore your state.
 
 ---
 
@@ -84,7 +86,7 @@ Main repo: [/absolute/path/to/main/repo]
       - Verify build in worktree.
       - If build fails → STOP, report, do NOT continue.
    c. Switch working directory to worktree for all subsequent operations.
-6. Create the tracking file `/tmp/batch-tracker.md` (include worktree path and branch name).
+6. Create the tracking file `/tmp/batch-tracker-<FIRST-CARD-ID>.md` (include worktree path and branch name).
 7. Create a task list to track progress across all cards.
 
 ---
@@ -196,7 +198,7 @@ After the final review passes AND all cards are committed in the worktree:
 ## Context recovery protocol
 
 If at ANY point you are unsure where you are in the batch:
-1. Read `/tmp/batch-tracker.md`
+1. Read your tracker file (`/tmp/batch-tracker-<FIRST-CARD-ID>.md`)
 2. Check `## Current Card` — if populated, resume that card at the listed phase.
 3. Check `## Card Queue` — find the next unchecked card.
 4. Check `## Completed Cards` — know what's already done (don't redo).
