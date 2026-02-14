@@ -18,26 +18,34 @@ BALDART provides a portable system for:
 
 ```bash
 # In your project directory
-npx baldart add
+npx github:antbald/BALDART add
 ```
 
-That's it! The framework is installed via Git subtree, symlinks created, and you're ready to go.
+That's it! The `add` command handles everything automatically:
+- Downloads the framework via Git subtree into `.framework/`
+- Creates symlinks for auto-updateable files (AGENTS.md, agents/, .claude/agents/, .claude/commands/)
+- Copies customizable templates (hooks, UI guidelines, backlog cards)
+- Creates required directories (docs/, templates/, backlog/)
+
+No additional activation steps needed — once installed, Claude Code will automatically pick up the agents, commands, and protocols.
 
 ### Usage
 
 ```bash
 # Show version
-npx baldart version
+npx github:antbald/BALDART version
 
 # Check status
-npx baldart status
+npx github:antbald/BALDART status
 
 # Update framework
-npx baldart update
+npx github:antbald/BALDART update
 
 # Contribute improvements
-npx baldart push
+npx github:antbald/BALDART push
 ```
+
+> **Tip**: During installation, BALDART offers to configure git aliases (`fw-version`, `fw-update`, `fw-push`) so you can skip the `npx github:antbald/BALDART` prefix after the first install.
 
 ## Features
 
@@ -112,17 +120,17 @@ cp templates/feature-card.template.yml backlog/FEAT-001.yml
 
 ```bash
 # Check for updates
-npx baldart status
+npx github:antbald/BALDART status
 
 # Update to latest
-npx baldart update
+npx github:antbald/BALDART update
 ```
 
 ### 4. Contribute Back
 
 ```bash
 # Made improvements? Share them!
-npx baldart push
+npx github:antbald/BALDART push
 ```
 
 ## Customization
@@ -159,7 +167,7 @@ Files with symlinks auto-update when framework updates:
 
 ## Commands Reference
 
-### `npx baldart add [repo]`
+### `npx github:antbald/BALDART add [repo]`
 
 Install framework in your project.
 
@@ -168,11 +176,11 @@ Install framework in your project.
 
 **Example:**
 ```bash
-npx baldart add              # Install from default repo
-npx baldart add owner/repo   # Install from custom repo
+npx github:antbald/BALDART add              # Install from default repo
+npx github:antbald/BALDART add owner/repo   # Install from custom fork
 ```
 
-### `npx baldart update`
+### `npx github:antbald/BALDART update`
 
 Update framework to latest version.
 
@@ -181,7 +189,7 @@ Update framework to latest version.
 - Updates via Git subtree
 - Verifies symlinks
 
-### `npx baldart push`
+### `npx github:antbald/BALDART push`
 
 Contribute improvements back to framework.
 
@@ -190,11 +198,11 @@ Contribute improvements back to framework.
 - Pushes via Git subtree
 - Guides VERSION/CHANGELOG update
 
-### `npx baldart version`
+### `npx github:antbald/BALDART version`
 
 Show installed framework version.
 
-### `npx baldart status`
+### `npx github:antbald/BALDART status`
 
 Check installation status:
 - Framework version
@@ -240,14 +248,14 @@ npx baldart version
 
 ```bash
 # Install framework first
-npx baldart add
+npx github:antbald/BALDART add
 ```
 
 ### Symlinks broken after update
 
 ```bash
 # Reinstall to recreate symlinks
-npx baldart add
+npx github:antbald/BALDART add
 ```
 
 ### Conflicts during update
@@ -304,7 +312,7 @@ Contributions welcome! See **[MAINTAINING.md](MAINTAINING.md)** for the complete
 ## Repository
 
 - **GitHub**: https://github.com/antbald/BALDART
-- **npm**: `baldart` (publishing soon)
+- **Install**: `npx github:antbald/BALDART add`
 - **Issues**: https://github.com/antbald/BALDART/issues
 
 ## Credits

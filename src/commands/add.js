@@ -126,8 +126,8 @@ async function add(repo, options) {
 
     if (configureAliases) {
       await git.git.addConfig('alias.fw-version', '!cat .framework/VERSION');
-      await git.git.addConfig('alias.fw-update', '!npx baldart update');
-      await git.git.addConfig('alias.fw-push', '!npx baldart push');
+      await git.git.addConfig('alias.fw-update', '!npx github:antbald/BALDART update');
+      await git.git.addConfig('alias.fw-push', '!npx github:antbald/BALDART push');
       UI.success('Git aliases configured');
     }
 
