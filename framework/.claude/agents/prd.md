@@ -270,6 +270,21 @@ Task tool call:
 - Cost projections and efficiency targets
 - Caching and query optimization requirements
 
+### PHASE 2.7 — CARD GROUPING DECISION
+**Execute this phase when the feature will produce multiple backlog cards.**
+
+Before creating backlog cards, determine the card family structure:
+
+1. **Ask the user**: "This feature will produce N backlog cards. Should they be grouped as a family sharing a single worktree, or treated as independent cards?"
+2. If grouped:
+   - Create one **epic/parent card** (e.g., `FEAT-XXXX`) with `group.is_epic: true` and `group.children: [list]`.
+   - Set `git_strategy.branch` on the parent card (e.g., `feat/FEAT-XXXX-<slug>`).
+   - Each child card gets `group.parent: FEAT-XXXX` and `group.sequence: N`.
+   - Child cards do NOT have their own `git_strategy` — they inherit from the parent.
+3. If standalone: each card gets its own `git_strategy` and no `group` fields.
+
+**Output**: Record the decision in the tracking notes and use it in Phase 4.
+
 ### PHASE 3 — IMPLEMENTATION PLAN
 Create a detailed execution plan with this structure:
 
@@ -315,6 +330,21 @@ status: TODO  # or READY if dependencies met
 owner_agent: coder  # or ui
 priority: P0  # P0/P1/P2
 
+# Card grouping (MUST populate per AGENTS.md)
+# For child cards in a family:
+group:
+  parent: FEAT-XXXX      # Parent/epic card ID
+  sequence: 1             # Execution order (1, 2, 3...)
+# For epic/parent cards:
+# group:
+#   is_epic: true
+#   children: [FEAT-XXXX-01, FEAT-XXXX-02, ...]
+
+# git_strategy: only on epic/parent or standalone cards.
+# Child cards inherit from parent — do NOT set git_strategy on children.
+git_strategy:
+  branch: "feat/FEAT-XXXX-slug"
+
 context: |
   [Background and links to PRD requirement IDs: FR-001, NFR-002]
 
@@ -351,6 +381,8 @@ notes: ""
 - Each card's acceptance criteria MUST include: "Build passes (`npm run build`), lint passes (`npm run lint`), and tests pass (`npm test` if applicable)"
 - Link to PRD requirement IDs (FR-###, NFR-###)
 - Status should align with repo flow from AGENTS.md
+- MUST populate `group` field on every card (per AGENTS.md): child cards set `group.parent` + `group.sequence`; epic cards set `group.is_epic: true` + `group.children`; standalone cards leave `group` empty
+- MUST set `git_strategy` only on epic/parent or standalone cards — child cards inherit from parent
 
 ## OUTPUT FORMAT
 Your complete output should be structured as:

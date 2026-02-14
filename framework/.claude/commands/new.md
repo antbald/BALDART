@@ -24,8 +24,13 @@ At batch start, create `/tmp/batch-tracker.md` with:
 ```markdown
 # Batch Run: [CARD-IDS]
 Started: [timestamp]
-Git strategy: [strategy]
 Total cards: [N]
+
+## Worktree
+Branch: [feat/FEAT-XXXX-slug]
+Path: [../wt/feat-FEAT-XXXX-slug]
+Group parent: [FEAT-XXXX or "standalone"]
+Main repo: [/absolute/path/to/main/repo]
 
 ## Card Queue
 - [ ] CARD-001 — [title from backlog]
@@ -63,10 +68,24 @@ Total cards: [N]
 
 1. Read each backlog card from `/backlog/*.yml` to understand scope and dependencies.
 2. Check `docs/references/project-status.md` for current state.
-3. Determine which cards can run in **parallel** (no shared files/components) vs which must be **sequential** (dependencies or overlapping paths).
-4. Ask the user which **git strategy** to use if not already specified in the cards (`main` vs feature branch per card).
-5. Create the tracking file `/tmp/batch-tracker.md`.
-6. Create a task list to track progress across all cards.
+3. Determine which cards can run in **parallel** (no shared files/components) vs which must be **sequential** (dependencies or overlapping paths). Use `group.sequence` to determine execution order within a group.
+4. **Worktree grouping** (automated from card metadata — do NOT ask the user if metadata is complete):
+   a. Check each card's `group.parent` field.
+   b. If all cards share the same `group.parent` → ONE worktree, branch derived from parent card.
+   c. If cards have no `group.parent` but share a common ID prefix (e.g., `FEAT-0396-*`) → suggest grouping to user.
+   d. If cards are unrelated (no shared parent, no common prefix) → each gets its own worktree.
+   e. Read the parent/epic card for `git_strategy.branch` if set; otherwise derive branch name per AGENTS.md 5.2 naming convention: `feat/<PARENT-ID>-<slug>`.
+   f. If `group.parent` is set AND the parent card has `git_strategy.branch` → use it directly, NO questions asked.
+5. **Create worktree(s)** (per AGENTS.md 5.2):
+   a. Ensure main is clean: `git checkout main && git pull`.
+   b. For each worktree group:
+      - Create: `git worktree add ../wt/<branch-name> -b <branch-name>`.
+      - Install dependencies in worktree (e.g., `npm install`, `pip install`, etc.).
+      - Verify build in worktree.
+      - If build fails → STOP, report, do NOT continue.
+   c. Switch working directory to worktree for all subsequent operations.
+6. Create the tracking file `/tmp/batch-tracker.md` (include worktree path and branch name).
+7. Create a task list to track progress across all cards.
 
 ---
 
@@ -97,9 +116,9 @@ For each card, execute these phases in order:
 16. Run `npm test` (if tests exist), `npm run lint`, and `npm run build` once at the end to verify everything passes. If any check fails, apply the same self-healing retry loop (up to 3 times, no user prompt).
 17. **Update tracker**: phase = "3-review DONE", log review findings count, fixes applied, and test results.
 
-### Phase 4 — Commit & Report
+### Phase 4 — Commit (in worktree, NO merge yet)
 18. **Update tracker**: phase = "4-commit".
-19. Stage and commit **all changes together** using format `[CARD-ID] Brief description` (MUST per AGENTS.md). Include all relevant files — implementation, review fixes, and doc updates in a single commit.
+19. Stage and commit **all changes together** in the worktree using format `[CARD-ID] Brief description` (MUST per AGENTS.md). Include all relevant files — implementation, review fixes, and doc updates in a single commit. Do NOT merge or push yet — that happens post-batch.
 20. Update the backlog card: set status to `DONE`, add implementation notes.
 21. **Update tracker**: move card to `## Completed Cards` with commit hash, summary, and flags.
 
@@ -117,13 +136,14 @@ For each card, execute these phases in order:
 
 ## Final review (after all cards)
 
-Once ALL cards are implemented:
+Once ALL cards are committed in the worktree:
 1. **Read the tracker file** to get the full picture of what was implemented.
 2. Invoke the **code-reviewer** agent for a holistic review across all implementations — check for inconsistencies, duplicated logic, or integration gaps between cards.
 3. Invoke the **doc-reviewer** agent for a final documentation check.
-4. Run `npm run build` one final time.
+4. Run build one final time in the worktree.
 5. **Update tracker** with final review results.
-6. Present a **single summary report** to the user per card (and a batch summary at the end):
+6. **Proceed to Phase 6** (post-batch merge & cleanup).
+7. Present a **single summary report** to the user per card (and a batch summary at the end):
    - **Files changed** (short list per card)
    - **Test results** (new tests + existing tests count, pass rate at each iteration)
    - **Build/lint status** (pass + retry count if any)
@@ -131,7 +151,45 @@ Once ALL cards are implemented:
    - **Review findings fixed** (count and brief description)
    - **Issues needing user attention** (anything unresolved, partially wired, or flagged)
    - **Commit hashes** (from tracker)
+   - **Merge commit hash** (from Phase 6)
+   - **Worktree cleanup status** (success/failed)
    - Overall implementation status
+
+---
+
+## Phase 6 — Post-batch merge & cleanup (per AGENTS.md 5.2)
+
+After the final review passes AND all cards are committed in the worktree:
+
+### 6a. Push feature branch
+1. From the worktree directory: `git push -u origin <branch-name>`.
+
+### 6b. Merge into main
+2. Switch to main repo: `cd <main-repo-path>` (read from tracker `## Worktree > Main repo`).
+3. `git checkout main && git pull`.
+4. `git merge --no-ff <branch-name>`.
+5. **If merge conflicts** → STOP immediately, report conflicting files to user. Do NOT auto-resolve.
+
+### 6c. Verify post-merge integrity
+6. Run build — must pass.
+7. Run tests — must pass (if tests exist).
+8. **If anything fails** → STOP, report. Do NOT delete branch or worktree.
+
+### 6d. Push main
+9. `git push`.
+
+### 6e. Cleanup
+10. Delete local branch: `git branch -d <branch-name>`.
+11. Delete remote branch: `git push origin --delete <branch-name>`.
+12. Remove worktree: `git worktree remove ../wt/<branch-name>`.
+13. Prune: `git worktree prune`.
+14. **Update tracker**: log merge commit hash, cleanup status.
+
+### Fail-safe rules
+- Never force push.
+- Never delete a branch before successful merge.
+- Never remove a worktree before confirming main is stable.
+- Stop execution immediately if any command fails.
 
 ---
 

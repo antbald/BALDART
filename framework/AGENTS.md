@@ -63,6 +63,8 @@ Conflict steps (must follow in order):
 - MUST update `docs/references/project-status.md` Active Code Context before work; multiple agents allowed if working on independent areas.
 - MUST pick one backlog card (TODO/READY), set `IN_PROGRESS`, and assign yourself before work.
 - MUST ask the user which git strategy to use when creating a backlog card and record it in `git_strategy`; if the user requires cloud-agent execution, use a non-main feature branch.
+- MUST use worktree isolation for all card implementations (see section 5.2); one worktree per card group (shared `group.parent`) or per standalone card; never work directly on `main`.
+- MUST populate the `group` field when creating backlog cards; child cards set `group.parent` and `group.sequence`, epic cards set `group.is_epic: true` and `group.children`.
 - MUST NOT work on files/components already claimed by another agent; multiple cards can be IN_PROGRESS if working on independent areas.
 - MUST keep backlog tasks/notes/status current and log decisions.
 - MUST perform a mandatory clarity analysis before fixing any issue labeled `bug`; confirm that the issue description, proposed correct behavior, and edge cases are unambiguous, document any resolved doubts, and only start fix work once every zone of uncertainty is covered.
@@ -79,7 +81,7 @@ Conflict steps (must follow in order):
 - MUST pre-sync: `git fetch origin`, clean status, confirm branch; use `git pull --ff-only` unless approved.
 - MUST get owner approval before force push/reset/branch deletion; create a safety tag `backup/<YYYYMMDD>-<reason>` and note it in the card.
 - MUST follow the `git_strategy` specified in the backlog card; if not specified, ask the user before starting work; delete merged branches when instructed.
-- MUST use branch-per-card for cloud agents (`codex/<CARD-ID>-<slug>` or `claude/<CARD-ID>-<slug>`), avoid direct cloud work on `main`, and submit PR for review before merge.
+- MUST use branch-per-card for cloud agents (`codex/<CARD-ID>-<slug>` or `claude/<CARD-ID>-<slug>`), avoid direct cloud work on `main`, and submit PR for review before merge; for local agents use `feat/<CARD-ID>-<slug>` per section 5.2.
 - MUST push working branch and keep `main` merge owner-controlled; prune remote branches only when instructed.
 - MUST run testing gates before DONE: run tests (if exist), run build, and CI checks on PR; manual validation is REQUIRED for local mode and OPTIONAL for cloud mode.
 - MUST create QA issues per test case (labels `qa` + area); when fixed add a fix summary, apply `vibe review`, leave open; open QA issues are the source of truth.
@@ -103,6 +105,47 @@ Conflict steps (must follow in order):
 
 - `local`: owner-approved work may run on `main`; manual validation remains mandatory before DONE.
 - `cloud`: always use feature branch from `main`, open PR, and rely on CI-first validation; local checks are advisory unless explicitly requested.
+
+## 5.2) Worktree Protocol
+
+Every card implementation uses a dedicated git worktree for isolation. Grouped cards (shared `group.parent`) share ONE worktree; standalone cards get their own.
+
+### Setup
+1. Ensure `main` is clean: `git checkout main && git pull`.
+2. Create worktree + branch: `git worktree add ../wt/<branch-name> -b <branch-name>`.
+3. Install deps in worktree (e.g., `npm install`, `pip install -r requirements.txt`).
+4. Verify build in worktree.
+
+### Branch naming
+- Grouped cards: `feat/<PARENT-ID>-<slug>` (e.g., `feat/FEAT-0394-onboarding`).
+- Standalone cards: `feat/<CARD-ID>-<slug>` (e.g., `feat/BUG-0339-store-switcher`).
+- Cloud agents: `claude/<CARD-ID>-<slug>` or `codex/<CARD-ID>-<slug>`.
+
+### Development
+- All work happens in the worktree directory, never in the main repo.
+- Each card = one commit (`[CARD-ID] description`), all on the same branch.
+- Build/test/lint must pass after each card.
+
+### Post-batch merge
+1. Push feature branch: `git push -u origin <branch-name>`.
+2. Switch to main: `cd <main-repo> && git checkout main && git pull`.
+3. Merge: `git merge --no-ff <branch-name>`.
+4. If merge conflicts → STOP, report conflicting files, do NOT auto-resolve.
+5. Verify: build and test on main.
+6. Push: `git push`.
+
+### Cleanup (only after successful merge + verify)
+1. `git branch -d <branch-name>` (safe delete, not `-D`).
+2. `git push origin --delete <branch-name>`.
+3. `git worktree remove ../wt/<branch-name>`.
+4. `git worktree prune`.
+
+### Fail-safe rules
+- Never use force push.
+- Never modify main directly.
+- Never delete a branch before a successful merge.
+- Never remove a worktree before confirming main is stable.
+- Stop execution immediately if any command fails.
 
 ## 6) Optional conventions (OPTIONAL)
 

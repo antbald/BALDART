@@ -11,8 +11,17 @@ claimed_at: ""  # YYYY-MM-DD HH:MM
 claimed_paths: []  # File/path ownership lock for this card
 
 git_strategy:
-  branch: ""  # main | codex/<card-id>-<slug> | claude/<card-id>-<slug> | <custom-branch-name>
+  branch: ""  # feat/<card-id>-<slug> | main (hotfix only). Children inherit from parent epic.
   reason: ""  # Why this choice (optional, for documentation)
+
+# Card grouping — defines family relationships for worktree isolation.
+# If this card is part of a multi-card feature, set parent + sequence.
+# If this IS the parent/epic card, set is_epic: true and list children.
+group:
+  parent: ""          # Parent/epic card ID (e.g., FEAT-0394). Empty if standalone.
+  sequence: null      # Execution order within group (1, 2, 3...). Null if standalone.
+  is_epic: false      # True if this is the parent/epic card that owns the group.
+  children: []        # Child card IDs (e.g., [FEAT-0394-01, FEAT-0394-02]). Only on epic cards.
 
 scope:
   summary: "[1-2 sentence description of what this feature does]"
